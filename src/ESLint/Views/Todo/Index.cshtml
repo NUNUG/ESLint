@@ -1,0 +1,44 @@
+﻿@{
+	ViewBag.Title = "Todo List";
+}
+
+@section scripts {
+	<script src="~/js/libs/require.js"></script>
+	<script>
+		require.config({
+			baseUrl: "js",
+			paths: {
+				"knockout": "libs/knockout-3.4.0"
+			}
+		});
+
+		require(["TodoViewModel", "knockout"], function (ViewModelExports, ko) {
+			var vmClass;
+			if (ViewModelExports.default)
+				vmClass = ViewModelExports.default;
+			else
+				vmClass = ViewModelExports.ViewModel;
+
+			var vm = new vmClass();
+			ko.applyBindings(vm);
+		});
+	</script>
+}
+
+<h3>Todos:</h3>
+
+<section id="addTodo">
+	<form data-bind="submit: function () { AddItem(document.querySelector('#current').value); }">
+		<input id="current" type="text" data-bind="textInput: Current" placeholder="What do you want to do?" />
+	</form>
+</section>
+
+<section id="todos" data-bind="visible: Todos().length">
+	<ul data-bind="foreach: Todos">
+		<li>
+			<input type="checkbox" data-bind="checked: Completed" />
+			<label data-bind="text: Title, event: { dblclick: $root.EditItem.bind($root) }"></label>
+			<button data-bind="click: $root.RemoveItem.bind($root)">Remove</button>
+		</li>
+	</ul>
+</section>
