@@ -27,18 +27,25 @@
 
 <h3>Todos:</h3>
 
-<section id="addTodo">
-	<form data-bind="submit: function () { AddItem(document.querySelector('#current').value); }">
-		<input id="current" type="text" data-bind="textInput: Current" placeholder="What do you want to do?" />
-	</form>
-</section>
+<section id="todoapp">
+	<section id="header">
+		<form data-bind="submit: function () { AddItem(document.querySelector('#new-todo').value); }">
+			<input id="new-todo" type="text" data-bind="textInput: Current" placeholder="What do you want to do?" />
+		</form>
+	</section>
 
-<section id="todos" data-bind="visible: Todos().length">
-	<ul data-bind="foreach: Todos">
-		<li>
-			<input type="checkbox" data-bind="checked: Completed" />
-			<label data-bind="text: Title, event: { dblclick: $root.EditItem.bind($root) }"></label>
-			<button data-bind="click: $root.RemoveItem.bind($root)">Remove</button>
-		</li>
-	</ul>
+	<section id="main" data-bind="visible: Todos().length">
+		<ul id="todo-list" data-bind="foreach: Todos">
+			<li data-bind="css: { completed: Completed, editing: Editing }">
+				<div class="view">
+					<input type="checkbox" data-bind="checked: Completed" class="toggle" />
+					<label data-bind="text: Title, event: { dblclick: $root.EditItem.bind($root) }"></label>
+					<button class="destroy" data-bind="click: $root.RemoveItem.bind($root)">Remove</button>
+				</div>
+				<form data-bind="submit: function () { $root.SaveEditing($data, document.querySelector('#edit').value); }">
+					<input id="edit" type="text" class="edit" data-bind="textInput: Title, event: { blur: function () { $root.SaveEditing($data, this.value); } }" />
+				</form>
+			</li>
+		</ul>
+	</section>
 </section>

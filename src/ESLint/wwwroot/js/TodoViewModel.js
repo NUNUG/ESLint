@@ -62,19 +62,34 @@
 
 	var todos = new WeakMap();
 
+	var _allCompleted = new WeakMap();
+
 	var TodoViewModel = function () {
 		_createClass(TodoViewModel, [{
 			key: "Todos",
 			get: function get() {
 				return todos.get(this);
 			}
+		}, {
+			key: "AllCompleted",
+			get: function get() {
+				return _allCompleted.get(this);
+			}
 		}]);
 
 		function TodoViewModel() {
+			var _this = this;
+
 			_classCallCheck(this, TodoViewModel);
 
 			todos.set(this, ko.observableArray());
 			this.Current = ko.observable();
+
+			_allCompleted.set(this, ko.computed(function () {
+				return todos.get(_this)().every(function (n) {
+					return n.Completed;
+				});
+			}));
 		}
 
 		_createClass(TodoViewModel, [{
@@ -91,7 +106,14 @@
 			}
 		}, {
 			key: "EditItem",
-			value: function EditItem() {}
+			value: function EditItem(item) {
+				item.Editing = true;
+			}
+		}, {
+			key: "SaveEditing",
+			value: function SaveEditing(item, value) {
+				item.Editing = false;
+			}
 		}]);
 
 		return TodoViewModel;
